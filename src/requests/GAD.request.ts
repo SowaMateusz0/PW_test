@@ -23,6 +23,9 @@ export async function loginAndSaveToken(): Promise<void> {
   const responseBody = await response.json();
 
   if (responseBody.access_token) {
+    // is needed to save the token instead just:
+    // process.env.TOKEN = responseBody.access_token;
+    
     const token = responseBody.access_token;
 
     let envContent = '';
@@ -37,6 +40,7 @@ export async function loginAndSaveToken(): Promise<void> {
     }
 
     fs.writeFileSync('.env', envContent.trim() + '\n', { encoding: 'utf-8' });
+    //after modification of .env file we need to reload dotenv config like i.e.  dotenv.config({ override: true });
   }
 }
 
@@ -51,6 +55,7 @@ export async function createArticleAndGetTitle(): Promise<string> {
   };
   console.log('Sending request 2...');
   const response = await context.post('http://localhost:3000/api/articles', {
+    // referencing to process.env.TOKEN will fail - this was injected to .env file after dotenv initialisation
     headers: {
       Authorization: `Bearer ${process.env.TOKEN}`,
       accept: 'application/json',
