@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { request } from '@playwright/test';
+import dotenv from 'dotenv';
 import * as fs from 'fs';
 
 export async function loginAndSaveToken(): Promise<void> {
@@ -24,8 +25,8 @@ export async function loginAndSaveToken(): Promise<void> {
 
   if (responseBody.access_token) {
     // is needed to save the token instead just:
-    // process.env.TOKEN = responseBody.access_token;
-    
+    process.env.TOKEN = responseBody.access_token;
+
     const token = responseBody.access_token;
 
     let envContent = '';
@@ -40,7 +41,8 @@ export async function loginAndSaveToken(): Promise<void> {
     }
 
     fs.writeFileSync('.env', envContent.trim() + '\n', { encoding: 'utf-8' });
-    //after modification of .env file we need to reload dotenv config like i.e.  dotenv.config({ override: true });
+    //after modification of .env file we need to reload dotenv config like i.e.
+    dotenv.config({ override: true });
   }
 }
 
